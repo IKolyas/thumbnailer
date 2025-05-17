@@ -23,7 +23,7 @@ jobs:
 
       - name: Install build dependencies
         run: |
-          sudo apt-get update && sudo apt-get install -y --no-install-recommends libvips-dev && go mod tidy
+          sudo apt-get update && sudo apt-get install -y --no-install-recommends libvips-dev
 
       - name: Check out code
         uses: actions/checkout@v3
@@ -47,7 +47,7 @@ jobs:
       
       - name: Install build dependencies
         run: |
-          sudo apt-get update && sudo apt-get install -y --no-install-recommends libvips-dev && go mod tidy
+          sudo apt-get update && sudo apt-get install -y --no-install-recommends libvips-dev
 
       - name: Check out code
         uses: actions/checkout@v3
