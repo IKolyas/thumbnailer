@@ -21,6 +21,7 @@ type PreviewerHandler struct {
 
 func (ph *PreviewerHandler) fill(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
+	//nolint
 	ctx = context.WithValue(ctx, "Headers", r.Header)
 
 	width, height, imgURL, err := parseFillParams(r.URL.Path)
