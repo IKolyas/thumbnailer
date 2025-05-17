@@ -1,0 +1,10 @@
+services:
+    nginx:
+      image: nginx:latest
+      ports:
+        - 8081:80
+      volumes:
+        - ./storage:/var/www/images
+        - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      working_dir: /var/www/images
+      restart: unless-stopped

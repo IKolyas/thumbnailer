@@ -1,0 +1,11 @@
+services:
+  previewer:
+    build:
+      context: ../
+      dockerfile: build/Dockerfile
+    image: IKolyas/image-previewer:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../logs:/app/logs
+    restart: unless-stopped
