@@ -1,0 +1,54 @@
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+name: Go
+
+on:
+  push:
+    branches: [ "main", "release" ]
+  pull_request:
+    branches: [ "main", "release" ]
+
+jobs:
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract branch name
+        run: echo "BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ^1.23
+
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Linters
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.57.2
+          working-directory: ./
+
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract branch name
+        run: echo "BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ^1.23
+      
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install -y --no-install-recommends libvips-dev
+
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Unit tests
+        run: go test -race -count 100 -timeout=1m ./internal/...
+        working-directory: ./
