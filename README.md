@@ -27,7 +27,7 @@ sudo apt-get install -y libvips-dev
 
 ### Конфигурация
 
-Файл `configs/previewer.json`:
+Файл `configs/config.json`:
 
 ```json
 {
@@ -46,8 +46,8 @@ sudo apt-get install -y libvips-dev
 |------------------|-----------------------------------|--------------|
 | host             | Адрес и порт для запуска сервера  | :8080        |
 | timeout          | Таймаут операций (сек)            | 30           |
-| cache_capacity   | Размер кэша (кол-во элементов)    | 1000         |
-| max_body_size    | Макс. размер обрабатываемого изображения (байт) | 10MB     |
+| cacheСapacity   | Размер кэша (кол-во элементов)    | 1000         |
+| maxBodySize    | Макс. размер обрабатываемого изображения (байт) | 10MB     |
 | logger.level     | Уровень логирования (debug, info, warn, error) | debug |
 | logger.output    | Файл для записи логов             | ./logs/previewer.log |
 

@@ -19,8 +19,13 @@ func init() {
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 
+	path, err := config.ParseFlags()
+	if err != nil {
+		log.Fatalf("Failed to parse flags: %v", err)
+	}
+
 	// Load config.
-	cfg, err := config.Load("configs/previewer.json")
+	cfg, err := config.Load(path)
 	if err != nil {
 		log.Fatalf("Failed to load config: %v", err)
 	}

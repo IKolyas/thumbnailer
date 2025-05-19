@@ -43,7 +43,7 @@ func Load(configPath string) (*Config, error) {
 func ParseFlags() (string, error) {
 	var configPath string
 
-	flag.StringVar(&configPath, "config", "./configs/preeviewer.json", "path to config file")
+	flag.StringVar(&configPath, "config", "./configs/config.json", "path to config file")
 	flag.Parse()
 
 	return configPath, nil

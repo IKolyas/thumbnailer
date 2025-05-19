@@ -28,8 +28,8 @@ RUN mkdir -p /app/logs && \
 ENV BIN_FILE=/app/bin/previewer
 COPY --from=build /opt/previewer ${BIN_FILE}
 
-ENV CONFIG_FILE=/app/configs/previewer.json
-COPY ./configs/previewer.json ${CONFIG_FILE}
+ENV CONFIG_FILE=/app/configs/config.json
+COPY ./configs/config.json ${CONFIG_FILE}
 
 ENTRYPOINT ["/bin/sh", "-c"]
 CMD ["${BIN_FILE} --config=${CONFIG_FILE}"]

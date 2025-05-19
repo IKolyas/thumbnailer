@@ -1,7 +1,7 @@
 # Variables
 BINARY_NAME ?= previewer
 DOCKER_IMAGE ?= previewer
-CONFIG_PATH ?= configs/previewer.json
+CONFIG_PATH ?= configs/config.json
 SRC_HOST ?= localhost
 
 .PHONY: build run lint clean docker-build docker-run docker-stop server-run server-stop unit-test integration-test
