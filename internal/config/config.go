@@ -13,6 +13,7 @@ type Config struct {
 	CacheCapacity int        `json:"cacheCapacity"`
 	MaxBodySize   int64      `json:"maxBodySize"`
 	Logger        LoggerConf `json:"logger"`
+	StorageDir    string     `json:"storageDir"`
 }
 
 type LoggerConf struct {

@@ -24,7 +24,10 @@ func New(ctx context.Context, cfg *config.Config) (*App, error) {
 		log.Fatalf("failed to create logger: %v", err)
 	}
 
-	storage := memory.NewLRUStorage(cfg.CacheCapacity)
+	storage, err := memory.NewLRUStorage(cfg.CacheCapacity, cfg.StorageDir)
+	if err != nil {
+		log.Fatalf("Error create lru storage: %v", err)
+	}
 
 	timeout, err := time.ParseDuration(cfg.Timeout)
 	if err != nil {
@@ -60,5 +63,7 @@ func (a *App) Stop() {
 		a.Logger.Error("Failed to stop server")
 	}
 	a.Logger.Info("Stop application")
-	a.storage.Clear()
+	if err := a.storage.Clear(); err != nil {
+		a.Logger.Error("Failed to clear cache")
+	}
 }

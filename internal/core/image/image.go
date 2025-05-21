@@ -1,6 +1,7 @@
 package image
 
 import (
+	"crypto/sha256"
 	"fmt"
 
 	"github.com/davidbyttow/govips/v2/vips"
@@ -29,7 +30,9 @@ type ImgData struct {
 }
 
 func (img *ImgData) String() string {
-	return fmt.Sprintf("%s|%d|%d|%v|%s", img.ImageURL, img.Width, img.Height, img.Format, img.Action)
+	hash := sha256.New()
+	hash.Write(fmt.Appendf(nil, "%s|%d|%d|%v|%s", img.ImageURL, img.Width, img.Height, img.Format, img.Action))
+	return fmt.Sprintf("%x", hash.Sum(nil))
 }
 
 type Image struct {
