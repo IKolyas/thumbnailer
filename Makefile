@@ -35,18 +35,18 @@ docker-build:
 
 docker-run:
 	@echo "Starting Docker container..."
-	docker-compose -f deployments/docker-compose.yaml up -d --build
+	docker compose -f deployments/docker-compose.yaml up -d --build
 
 docker-stop:
 	@echo "Stopping Docker container..."
-	docker-compose -f deployments/docker-compose.yaml down
+	docker compose -f deployments/docker-compose.yaml down
 
 # Test server operations
 server-run:
-	docker-compose -f deployments/server/docker-compose.yaml up -d --build
+	docker compose -f deployments/server/docker-compose.yaml up -d --build
 
 server-stop:
-	docker-compose -f deployments/server/docker-compose.yaml down
+	docker compose -f deployments/server/docker-compose.yaml down
 
 # Tests
 unit-test: 
