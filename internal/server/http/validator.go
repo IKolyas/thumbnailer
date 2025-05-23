@@ -2,8 +2,7 @@ package http
 
 import (
 	"fmt"
-	"net/url"
-	"path"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -20,32 +19,49 @@ func (f *FillImageRequest) validate(urlPath string) error {
 		return fmt.Errorf("invalid URL path format: %q", urlPath)
 	}
 
-	parts := strings.SplitN(urlPath[len(prefix):], "/", 4)
-	if len(parts) != 4 {
+	fmt.Println(urlPath)
+
+	re := regexp.MustCompile(`^(?P<width>\d+)/(?P<height>\d+)/(?P<url>.+)$`)
+
+	matches := re.FindStringSubmatch(urlPath[len(prefix):])
+	if matches == nil {
 		return fmt.Errorf("invalid URL path format: %q", urlPath)
 	}
 
-	width, err := strconv.Atoi(parts[0])
+	params := make(map[string]string)
+	for i, name := range re.SubexpNames() {
+		if i > 0 && i <= len(matches) {
+			params[name] = matches[i]
+		}
+	}
+
+	w := params["width"]
+	h := params["height"]
+	rawURL := params["url"]
+
+	width, err := strconv.Atoi(w)
 	if err != nil {
-		return fmt.Errorf("invalid width parameter: %w", err)
+		return fmt.Errorf("invalid image width: %w", err)
 	}
 
-	height, err := strconv.Atoi(parts[1])
+	height, err := strconv.Atoi(h)
 	if err != nil {
-		return fmt.Errorf("invalid height parameter: %w", err)
+		return fmt.Errorf("invalid image height: %w", err)
 	}
 
-	if width <= 0 || height <= 0 {
-		return fmt.Errorf("width and height must be positive integers")
+	if strings.HasPrefix(rawURL, "http:/") && !strings.HasPrefix(rawURL, "http://") {
+		rawURL = strings.Replace(rawURL, "http:/", "http://", 1)
 	}
 
-	imageURL := "http://" + path.Join(parts[2:]...)
-
-	if _, err = url.ParseRequestURI(imageURL); err != nil {
-		return fmt.Errorf("invalid image URL: %w", err)
+	if strings.HasPrefix(rawURL, "https:/") && !strings.HasPrefix(rawURL, "https://") {
+		rawURL = strings.Replace(rawURL, "https:/", "https://", 1)
 	}
 
-	f.ImageURL = imageURL
+	if !strings.Contains(rawURL, "://") {
+		rawURL = "http://" + rawURL
+	}
+
+	f.ImageURL = rawURL
 	f.Width = width
 	f.Height = height
 
