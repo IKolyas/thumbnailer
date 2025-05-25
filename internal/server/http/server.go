@@ -59,7 +59,7 @@ func (s *Server) setupRoutes() http.Handler {
 		server: *s,
 	}
 
-	router.HandleFunc("/fill/", h.fill)
+	router.HandleFunc("/fill/", h.Fill)
 
 	var handler http.Handler = router
 	for i := len(s.middlewares) - 1; i >= 0; i-- {

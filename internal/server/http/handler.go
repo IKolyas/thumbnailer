@@ -11,45 +11,81 @@ import (
 	"github.com/davidbyttow/govips/v2/vips"
 )
 
+const (
+	headerContentLength = "Content-Length"
+	headerContextKey    = "Headers"
+)
+
 type PreviewerHandler struct {
 	server Server
 }
 
-func (ph *PreviewerHandler) fill(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	//nolint
-	ctx = context.WithValue(ctx, "Headers", r.Header)
+func NewPreviewerHandler(server Server) *PreviewerHandler {
+	return &PreviewerHandler{
+		server: server,
+	}
+}
 
-	imageRequest := FillImageRequest{}
-
-	err := imageRequest.validate(r.URL.Path)
+func (ph *PreviewerHandler) Fill(w http.ResponseWriter, r *http.Request) {
+	ctx := ph.prepareContext(r)
+	
+	imageRequest, err := ph.parseAndValidateRequest(r)
 	if err != nil {
-		ph.server.logger.Error(fmt.Sprintf("Failed to parse parameters from path: %v", err))
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		ph.handleError(w, "Failed to parse parameters from path", err, http.StatusBadRequest)
 		return
 	}
 
-	imgData := image.ImgData{
-		ImageURL: imageRequest.ImageURL,
-		Width:    imageRequest.Width,
-		Height:   imageRequest.Height,
+	imgData := ph.createImageData(imageRequest)
+	
+	imageData, err := ph.server.storage.Get(ctx, imgData)
+	if err != nil {
+		ph.handleStorageError(w, err)
+		return
+	}
+
+	ph.writeResponse(w, imageData)
+}
+
+func (ph *PreviewerHandler) prepareContext(r *http.Request) context.Context {
+	ctx := r.Context()
+	return context.WithValue(ctx, headerContextKey, r.Header)
+}
+
+func (ph *PreviewerHandler) parseAndValidateRequest(r *http.Request) (*FillImageRequest, error) {
+	imageRequest := &FillImageRequest{}
+	if err := imageRequest.validate(r.URL.Path); err != nil {
+		return nil, err
+	}
+	return imageRequest, nil
+}
+
+func (ph *PreviewerHandler) createImageData(req *FillImageRequest) *image.ImgData {
+	return &image.ImgData{
+		ImageURL: req.ImageURL,
+		Width:    req.Width,
+		Height:   req.Height,
 		Format:   vips.ImageTypeUnknown,
 		Action:   image.ImageActionFill,
 	}
+}
 
-	imageData, err := ph.server.storage.Get(ctx, &imgData)
-	if err != nil {
-		ph.server.logger.Error(fmt.Sprintf("Failed to get image source: %v", err))
-		var sourceErr *source.Error
-		if errors.As(err, &sourceErr) {
-			http.Error(w, err.Error(), sourceErr.Code())
-		} else {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
+func (ph *PreviewerHandler) handleError(w http.ResponseWriter, message string, err error, statusCode int) {
+	ph.server.logger.Error(fmt.Sprintf("%s: %v", message, err))
+	http.Error(w, err.Error(), statusCode)
+}
+
+func (ph *PreviewerHandler) handleStorageError(w http.ResponseWriter, err error) {
+	message := "Failed to get image source"
+	var sourceErr *source.Error
+	if errors.As(err, &sourceErr) {
+		ph.handleError(w, message, err, sourceErr.Code())
 		return
 	}
+	ph.handleError(w, message, err, http.StatusInternalServerError)
+}
 
-	w.Header().Set("Content-Length", fmt.Sprint(len(imageData)))
+func (ph *PreviewerHandler) writeResponse(w http.ResponseWriter, imageData []byte) {
+	w.Header().Set(headerContentLength, fmt.Sprint(len(imageData)))
 	w.WriteHeader(http.StatusOK)
 	if _, err := w.Write(imageData); err != nil {
 		ph.server.logger.Error(fmt.Sprintf("Failed to write response: %v", err))
