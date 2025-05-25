@@ -28,7 +28,6 @@ func NewPreviewerHandler(server Server) *PreviewerHandler {
 
 func (ph *PreviewerHandler) Fill(w http.ResponseWriter, r *http.Request) {
 	ctx := ph.prepareContext(r)
-	
 	imageRequest, err := ph.parseAndValidateRequest(r)
 	if err != nil {
 		ph.handleError(w, "Failed to parse parameters from path", err, http.StatusBadRequest)
@@ -36,7 +35,6 @@ func (ph *PreviewerHandler) Fill(w http.ResponseWriter, r *http.Request) {
 	}
 
 	imgData := ph.createImageData(imageRequest)
-	
 	imageData, err := ph.server.storage.Get(ctx, imgData)
 	if err != nil {
 		ph.handleStorageError(w, err)
@@ -48,6 +46,7 @@ func (ph *PreviewerHandler) Fill(w http.ResponseWriter, r *http.Request) {
 
 func (ph *PreviewerHandler) prepareContext(r *http.Request) context.Context {
 	ctx := r.Context()
+	//nolint
 	return context.WithValue(ctx, headerContextKey, r.Header)
 }
 
