@@ -1,8 +1,6 @@
 # Image Previewer Microservice
 
-![Microservice](https://img.shields.io/badge/Type-Microservice-blue) 
-![Go](https://img.shields.io/badge/Go-1.20-brightgreen) 
-![Libvips](https://img.shields.io/badge/Libvips-required-orange)
+[![Go Report Card](https://goreportcard.com/badge/github.com/IKolyas/thumbnailer)](https://goreportcard.com/report/github.com/IKolyas/thumbnailer)
 
 Микросервис для динамической обработки изображений с поддержкой кэширования и различных стратегий ресайза.
 
