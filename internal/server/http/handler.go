@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/IKolyas/image-previewer/internal/core/image"
-	"github.com/IKolyas/image-previewer/internal/storage/source"
+	"github.com/IKolyas/thumbnailer/internal/core/image"
+	"github.com/IKolyas/thumbnailer/internal/storage/source"
 	"github.com/davidbyttow/govips/v2/vips"
 )
 

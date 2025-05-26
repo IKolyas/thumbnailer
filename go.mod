@@ -1,4 +1,4 @@
-module github.com/IKolyas/image-previewer
+module github.com/IKolyas/thumbnailer
 
 go 1.23.3
 

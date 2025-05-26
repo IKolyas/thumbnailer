@@ -7,8 +7,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/IKolyas/image-previewer/internal/app"
-	"github.com/IKolyas/image-previewer/internal/config"
+	"github.com/IKolyas/thumbnailer/internal/app"
+	"github.com/IKolyas/thumbnailer/internal/config"
 	"github.com/davidbyttow/govips/v2/vips"
 )
 

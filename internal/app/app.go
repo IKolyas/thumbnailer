@@ -5,10 +5,10 @@ import (
 	"log"
 	"time"
 
-	"github.com/IKolyas/image-previewer/internal/config"
-	"github.com/IKolyas/image-previewer/internal/logger"
-	"github.com/IKolyas/image-previewer/internal/server/http"
-	"github.com/IKolyas/image-previewer/internal/storage/memory"
+	"github.com/IKolyas/thumbnailer/internal/config"
+	"github.com/IKolyas/thumbnailer/internal/logger"
+	"github.com/IKolyas/thumbnailer/internal/server/http"
+	"github.com/IKolyas/thumbnailer/internal/storage/memory"
 )
 
 type App struct {

@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/IKolyas/image-previewer/internal/logger"
-	"github.com/IKolyas/image-previewer/internal/storage/source"
+	"github.com/IKolyas/thumbnailer/internal/logger"
+	"github.com/IKolyas/thumbnailer/internal/storage/source"
 )
 
 type Server struct {
