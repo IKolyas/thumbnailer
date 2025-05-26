@@ -3,7 +3,6 @@ package integrations
 import (
 	"context"
 	"net/http"
-	"os"
 	"testing"
 	"time"
 
@@ -12,7 +11,7 @@ import (
 )
 
 const (
-	baseURL     = "http://localhost:8080"
+	baseURL     = "http://localhost:8080/fill/500/500/storage-server"
 	testTimeout = 5 * time.Second
 )
 
@@ -20,10 +19,7 @@ func TestAPISuccess(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), testTimeout)
 	defer cancel()
 
-	sourceHost := os.Getenv("SRC_HOST")
-	url := buildURL("/fill/500/500/", sourceHost, "/buket.jpg")
-
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", baseURL+"/buket.jpg", nil)
 	require.NoError(t, err, "failed to create request")
 
 	resp, err := http.DefaultClient.Do(req)
@@ -38,10 +34,7 @@ func TestAPINotFound(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), testTimeout)
 	defer cancel()
 
-	sourceHost := os.Getenv("SRC_HOST")
-	url := buildURL("/fill/600/600/", sourceHost, "/not-found.jpg")
-
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", baseURL+"/not-found.jpg", nil)
 	require.NoError(t, err)
 
 	resp, err := http.DefaultClient.Do(req)
@@ -55,10 +48,7 @@ func TestAPINoImage(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), testTimeout)
 	defer cancel()
 
-	sourceHost := os.Getenv("SRC_HOST")
-	url := buildURL("/fill/600/600/", sourceHost, "/no-image.txt")
-
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", baseURL+"/no-image.txt", nil)
 	require.NoError(t, err)
 
 	resp, err := http.DefaultClient.Do(req)
@@ -72,10 +62,7 @@ func TestAPIErrorServer(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), testTimeout)
 	defer cancel()
 
-	sourceHost := os.Getenv("SRC_HOST")
-	url := buildURL("/fill/600/600/", sourceHost, "/error.txt")
-
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", baseURL+"/error.txt", nil)
 	require.NoError(t, err)
 
 	resp, err := http.DefaultClient.Do(req)
@@ -83,16 +70,4 @@ func TestAPIErrorServer(t *testing.T) {
 	defer resp.Body.Close()
 
 	assert.Equal(t, http.StatusInternalServerError, resp.StatusCode)
-}
-
-func buildURL(paths ...string) string {
-	return baseURL + joinPaths(paths...)
-}
-
-func joinPaths(paths ...string) string {
-	var result string
-	for _, path := range paths {
-		result += path
-	}
-	return result
 }

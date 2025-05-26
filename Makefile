@@ -35,18 +35,18 @@ docker-build:
 
 docker-run:
 	@echo "Starting Docker container..."
-	docker compose -f deployments/docker-compose.yaml up -d --build
+	docker compose -f deployments/docker-compose.yaml up previewer -d --build
 
 docker-stop:
 	@echo "Stopping Docker container..."
-	docker compose -f deployments/docker-compose.yaml down
+	docker compose -f deployments/docker-compose.yaml down previewer
 
 # Test server operations
 server-run:
-	docker compose -f deployments/server/docker-compose.yaml up -d --build
+	docker compose -f deployments/docker-compose.yaml up storage-server -d --build
 
 server-stop:
-	docker compose -f deployments/server/docker-compose.yaml down
+	docker compose -f deployments/docker-compose.yaml down storage-server
 
 # Tests
 unit-test: 
@@ -54,6 +54,6 @@ unit-test:
 	go test -v ./internal/storage/memory
 
 integration-test: server-run docker-run
-	SRC_HOST=$(SRC_HOST) go test ./integrations
+	go test ./integrations
 	$(MAKE) server-stop
 	$(MAKE) docker-stop
