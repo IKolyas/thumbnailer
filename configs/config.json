@@ -1,0 +1,11 @@
+{
+  "host": ":8080",
+  "timeout": "30s",
+  "cacheCapacity": 1000,
+  "maxBbodySize": 10485760,
+  "storageDir": "./storage/",
+  "logger": {
+    "level": "debug",
+    "output": "./logs/previewer.log"
+  }
+}

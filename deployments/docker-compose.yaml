@@ -1,0 +1,27 @@
+services:
+  storage-server:
+    image: nginx:latest
+    volumes:
+      - ./server/storage:/var/www/images
+      - ./server/nginx/nginx.conf:/etc/nginx/nginx.conf
+    working_dir: /var/www/images
+    restart: unless-stopped
+    networks:
+      - thumbnailer-network
+
+  previewer:
+    build:
+      context: ../
+      dockerfile: build/Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../logs:/app/logs
+      - ../storage:/app/storage
+    restart: unless-stopped
+    networks:
+      - thumbnailer-network
+
+networks:
+  thumbnailer-network:
+    driver: bridge
